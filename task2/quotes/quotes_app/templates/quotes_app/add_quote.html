@@ -1,0 +1,43 @@
+{% extends 'quotes_app/base.html' %}
+
+{% block content %}
+
+{% if messages %}
+<div>
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert-{{ message.tags }}" {% endif %}>{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<form action="{% url 'quotes_app:add_quote' %}" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group col-xs-3">
+            <label for="quote">Quote</label>
+            {{ form.quote }}
+            <span>{{ form.errors.quote }}</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-3">
+            <label for="author">Author</label>
+            {{ form.author }}
+            <span>{{ form.errors.author }}</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-3">
+            <select name="tags" multiple="multiple" required>
+                {% for tag in tags %}
+                <option value="{{tag.name}}">{{tag.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <input type="submit" value="Add quote" class="btn btn-primary">
+
+</form>
+
+{% endblock content %}

@@ -1,0 +1,41 @@
+{% extends "quotes_app/base.html" %}
+{% load get_tags %}
+
+{% block content %}
+
+<h3>Viewing tag: <a href="{% url 'quotes_app:search_by_tag' tag.name %}">{{ tag.name }}</a></h3>
+<div class="col-md-8">
+    {% for quote in page_obj %}
+    <div class="quote">
+        <span class="text" itemprop="text">{{ quote.quote }}</span>
+        <span>by <small class="author">{{ quote.author.fullname }}</small>
+            <a href="{% url 'quotes_app:author_detail' quote.author.fullname %}">(about)</a>
+        </span>
+        <div class="tags">
+            Tags:
+            {% for tag in quote.tags|tags %}
+            <a class="tag" href="{% url 'quotes_app:search_by_tag' tag.name %}">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+
+    <nav>
+        <ul class="pager">
+            {% if page_obj.has_previous %}
+            <li class="previous">
+                <a href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">&larr;</span> Previous</a>
+            </li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+            <li class="next">
+                <a href="?page={{ page_obj.next_page_number }}">Next <span aria-hidden="true">&rarr;</span></a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+</div>
+
+{% endblock content %}

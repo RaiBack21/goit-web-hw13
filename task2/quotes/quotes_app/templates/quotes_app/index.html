@@ -1,0 +1,63 @@
+{% extends "quotes_app/base.html" %}
+{% load get_tags %}
+
+{% block content %}
+
+<div class="row">
+    {% if user.is_authenticated %}
+    <div class="creation">
+        <a href="{% url 'quotes_app:add_author' %}">Add author</a>
+        <a href="{% url 'quotes_app:add_quote' %}">Add quote</a>
+        <a href="{% url 'quotes_app:parse_data' %}">Parse data</a>
+    </div>
+    {% endif %}
+    <div class="col-md-8">
+        {% for quote in page_obj %}
+        <div class="quote">
+            <span class="text" itemprop="text">{{ quote.quote }}</span>
+            <span>by <small class="author">{{ quote.author.fullname }}</small>
+                <a href="{% url 'quotes_app:author_detail' quote.author.fullname %}">(about)</a>
+            </span>
+            <div class="tags">
+                Tags:
+                {% for tag in quote.tags|tags %}
+                <a class="tag" href="{% url 'quotes_app:search_by_tag' tag.name %}">{{ tag }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <nav>
+            <ul class="pager">
+                {% if page_obj.has_previous %}
+                <li class="previous">
+                    <a href="?page={{ page_obj.previous_page_number }}"><span aria-hidden="true">&larr;</span> Previous</a>
+                </li>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                <li class="next">
+                    <a href="?page={{ page_obj.next_page_number }}">Next <span aria-hidden="true">&rarr;</span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+    <div class="col-md-4 tags-box">
+
+        <h2>Top Ten tags</h2>
+
+        {% for tag in top_tags %}
+        <span class="tag-item">
+            <a class="tag" style="font-size: 28px" 
+                href="{% url 'quotes_app:search_by_tag' tag.name %}">{{ tag.name }}
+            </a>
+        </span>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock content %}
